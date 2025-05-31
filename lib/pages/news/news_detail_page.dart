@@ -45,7 +45,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
       });
 
       final detail = await NewsApi.getNewsDetail(id);
-      
+
       setState(() {
         _newsDetail = detail;
         _isLoading = false;
@@ -67,6 +67,15 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     final content = _newsDetail?.content ?? widget.content;
     final publishDate = _newsDetail?.publishDate ?? widget.publishDate;
 
+    // 创建临时NewsItem对象用于获取轮换图片
+    final tempNewsItem = NewsItem(
+      id: _newsDetail?.id ?? widget.id,
+      title: title,
+      content: content,
+      image: image,
+      publishDate: publishDate,
+    );
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppTheme.primaryColor,
@@ -74,138 +83,111 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         centerTitle: true,
         elevation: 0,
       ),
-      body: _isLoading 
-        ? const Center(child: CircularProgressIndicator())
-        : (_errorMessage != null)
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _errorMessage!,
-                    style: TextStyle(color: Colors.red[700]),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: widget.id != null ? () => _fetchNewsDetail(widget.id!) : null,
-                    child: const Text('重试'),
-                  ),
-                ],
-              ),
-            )
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 标题
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.textPrimaryColor,
-                      ),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : (_errorMessage != null)
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _errorMessage!,
+                      style: TextStyle(color: Colors.red[700]),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  
-                  // 日期时间
-                  if (publishDate != null)
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed:
+                          widget.id != null
+                              ? () => _fetchNewsDetail(widget.id!)
+                              : null,
+                      child: const Text('重试'),
+                    ),
+                  ],
+                ),
+              )
+              : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 标题
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
                       child: Text(
-                        '${publishDate.year}年${publishDate.month}月${publishDate.day}日 ${_formatTime(publishDate)}',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.grey[600],
+                        title,
+                        style: const TextStyle(
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textPrimaryColor,
                         ),
                       ),
                     ),
-                  
-                  // 间距
-                  const SizedBox(height: 16.0),
-                  
-                  // 图片
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: image.startsWith('http') 
-                          ? Image.network(
-                              image,
-                              fit: BoxFit.cover,
-                              loadingBuilder: (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Container(
-                                  height: 200,
-                                  color: Colors.grey[300],
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress.expectedTotalBytes != null
-                                          ? loadingProgress.cumulativeBytesLoaded / 
-                                              loadingProgress.expectedTotalBytes!
-                                          : null,
-                                    ),
+
+                    // 日期时间
+                    if (publishDate != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          '${publishDate.year}年${publishDate.month}月${publishDate.day}日 ${_formatTime(publishDate)}',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ),
+
+                    // 间距
+                    const SizedBox(height: 16.0),
+
+                    // 图片 - 使用轮换图片
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Image.asset(
+                            tempNewsItem.getDisplayImage(),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              // 图片加载失败时显示备用占位符
+                              return Container(
+                                height: 200,
+                                color: tempNewsItem.getPlaceholderColor(),
+                                child: Center(
+                                  child: Icon(
+                                    tempNewsItem.getIconData(),
+                                    color: Colors.white,
+                                    size: 50.0,
                                   ),
-                                );
-                              },
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  height: 200,
-                                  color: Colors.grey[300],
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.image_not_supported,
-                                      color: Colors.grey,
-                                      size: 50.0,
-                                    ),
-                                  ),
-                                );
-                              },
-                            )
-                          : Image.asset(
-                              image,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  height: 200,
-                                  color: Colors.grey[300],
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.image_not_supported,
-                                      color: Colors.grey,
-                                      size: 50.0,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  
-                  // 内容
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      content ?? '在近日举行的2024年度科技创新大会上，绿境科技凭借在环保技术领域的突出贡献，荣获年度创新企业奖。该奖项彰显了公司在技术创新方向的领先地位。',
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                        color: AppTheme.textPrimaryColor,
-                        height: 1.6,
+
+                    // 内容
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        content ??
+                            '在近日举行的2024年度科技创新大会上，绿境科技凭借在环保技术领域的突出贡献，荣获年度创新企业奖。该奖项彰显了公司在技术创新方向的领先地位。',
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                          color: AppTheme.textPrimaryColor,
+                          height: 1.6,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
     );
   }
-  
+
   // 格式化时间
   String _formatTime(DateTime date) {
     String hour = date.hour.toString().padLeft(2, '0');

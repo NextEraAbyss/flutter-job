@@ -57,9 +57,7 @@ class _NewsPageState extends State<NewsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      body: SafeArea(
-        child: _buildContent(),
-      ),
+      body: SafeArea(child: _buildContent()),
     );
   }
 
@@ -67,11 +65,9 @@ class _NewsPageState extends State<NewsPage> {
   Widget _buildContent() {
     // 加载中状态显示加载指示器
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
-    
+
     // 发生错误时显示错误信息和重试按钮
     if (_errorMessage != null) {
       return Center(
@@ -84,35 +80,26 @@ class _NewsPageState extends State<NewsPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _fetchNewsData,
-              child: const Text('重试'),
-            ),
+            ElevatedButton(onPressed: _fetchNewsData, child: const Text('重试')),
           ],
         ),
       );
     }
-    
+
     // 数据为空时显示提示信息和刷新按钮
     if (_newsItems.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              '没有找到新闻',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
+            Text('没有找到新闻', style: TextStyle(color: Colors.grey[600])),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _fetchNewsData,
-              child: const Text('刷新'),
-            ),
+            ElevatedButton(onPressed: _fetchNewsData, child: const Text('刷新')),
           ],
         ),
       );
     }
-    
+
     // 显示新闻列表，支持下拉刷新
     return RefreshIndicator(
       onRefresh: _fetchNewsData,
@@ -120,9 +107,7 @@ class _NewsPageState extends State<NewsPage> {
         padding: const EdgeInsets.all(12.0),
         itemCount: _newsItems.length,
         itemBuilder: (context, index) {
-          return NewsCard(
-            newsItem: _newsItems[index],
-          );
+          return NewsCard(newsItem: _newsItems[index]);
         },
       ),
     );
@@ -134,10 +119,7 @@ class _NewsPageState extends State<NewsPage> {
 class NewsCard extends StatelessWidget {
   final NewsItem newsItem;
 
-  const NewsCard({
-    super.key,
-    required this.newsItem,
-  });
+  const NewsCard({super.key, required this.newsItem});
 
   @override
   Widget build(BuildContext context) {
@@ -151,13 +133,14 @@ class NewsCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewsDetailPage(
-                  id: newsItem.id,
-                  title: newsItem.title,
-                  image: newsItem.image ?? '',
-                  content: newsItem.content,
-                  publishDate: newsItem.publishDate,
-                ),
+                builder:
+                    (context) => NewsDetailPage(
+                      id: newsItem.id,
+                      title: newsItem.title,
+                      image: newsItem.image ?? '',
+                      content: newsItem.content,
+                      publishDate: newsItem.publishDate,
+                    ),
               ),
             );
           },
@@ -173,70 +156,23 @@ class NewsCard extends StatelessWidget {
                 child: SizedBox(
                   width: 100.0,
                   height: 100.0,
-                  child: newsItem.image != null
-                      ? (newsItem.image!.startsWith('http')
-                          // 网络图片处理
-                          ? Image.network(
-                              newsItem.image!,
-                              fit: BoxFit.cover,
-                              loadingBuilder: (context, child, loadingProgress) {
-                                // 图片加载过程中显示进度指示器
-                                if (loadingProgress == null) return child;
-                                return Container(
-                                  color: Colors.grey[200],
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress.expectedTotalBytes != null
-                                          ? loadingProgress.cumulativeBytesLoaded / 
-                                              loadingProgress.expectedTotalBytes!
-                                          : null,
-                                    ),
-                                  ),
-                                );
-                              },
-                              errorBuilder: (context, error, stackTrace) {
-                                // 图片加载错误时显示占位符
-                                return Container(
-                                  color: _getColorFromHex(newsItem.placeholderColor) ?? Colors.grey[300],
-                                  child: Center(
-                                    child: Icon(
-                                      newsItem.getIconData() ?? Icons.image,
-                                      color: Colors.white,
-                                      size: 40.0,
-                                    ),
-                                  ),
-                                );
-                              },
-                            )
-                          // 本地图片处理
-                          : Image.asset(
-                              newsItem.image!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                // 图片加载错误时显示占位符
-                                return ColoredBox(
-                                  color: newsItem.getPlaceholderColor(),
-                                  child: Center(
-                                    child: Icon(
-                                      newsItem.getIconData(),
-                                      color: Colors.white,
-                                      size: 40.0,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ))
-                      // 无图片时显示占位符
-                      : ColoredBox(
-                          color: newsItem.getPlaceholderColor(),
-                          child: Center(
-                            child: Icon(
-                              newsItem.getIconData(),
-                              color: Colors.white,
-                              size: 40.0,
-                            ),
+                  child: Image.asset(
+                    newsItem.getDisplayImage(),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      // 图片加载失败时显示备用占位符
+                      return ColoredBox(
+                        color: newsItem.getPlaceholderColor(),
+                        child: Center(
+                          child: Icon(
+                            newsItem.getIconData(),
+                            color: Colors.white,
+                            size: 40.0,
                           ),
                         ),
+                      );
+                    },
+                  ),
                 ),
               ),
               // 新闻标题区域
@@ -270,15 +206,4 @@ class NewsCard extends StatelessWidget {
       ),
     );
   }
-}
-
-/// 将十六进制颜色字符串转换为Color对象
-/// 如果输入为null，则返回null
-Color? _getColorFromHex(String? hexColor) {
-  if (hexColor == null) return null;
-  hexColor = hexColor.replaceAll('#', '');
-  if (hexColor.length == 6) {
-    hexColor = 'FF$hexColor';
-  }
-  return Color(int.parse(hexColor, radix: 16));
 }
