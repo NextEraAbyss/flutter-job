@@ -32,6 +32,9 @@ class _NewsPageState extends State<NewsPage> {
   /// 从API获取新闻数据
   Future<void> _fetchNewsData() async {
     try {
+      // 检查widget是否仍然挂载，防止在销毁后调用setState
+      if (!mounted) return;
+
       setState(() {
         _isLoading = true;
         _errorMessage = null;
@@ -40,11 +43,17 @@ class _NewsPageState extends State<NewsPage> {
       // 从API获取新闻数据
       final newsList = await NewsApi.getNewsList();
 
+      // 检查widget是否仍然挂载，防止在销毁后调用setState
+      if (!mounted) return;
+
       setState(() {
         _newsItems = newsList;
         _isLoading = false;
       });
     } catch (e) {
+      // 检查widget是否仍然挂载，防止在销毁后调用setState
+      if (!mounted) return;
+
       setState(() {
         _errorMessage = '获取新闻数据失败: $e';
         _isLoading = false;
@@ -111,6 +120,13 @@ class _NewsPageState extends State<NewsPage> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // 清理资源，为未来可能的扩展做准备
+    // 如果后续添加Timer、StreamSubscription等需要手动清理的资源，在此处理
+    super.dispose();
   }
 }
 

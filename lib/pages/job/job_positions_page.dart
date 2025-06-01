@@ -49,6 +49,9 @@ class _JobPositionsPageState extends State<JobPositionsPage> {
   /// 从API加载职位数据
   Future<void> _loadJobPositions() async {
     try {
+      // 检查widget是否仍然挂载，防止在销毁后调用setState
+      if (!mounted) return;
+
       setState(() {
         _isLoading = true;
         _errorMessage = null;
@@ -57,12 +60,18 @@ class _JobPositionsPageState extends State<JobPositionsPage> {
       // 从API获取职位列表
       final positions = await JobApi.getJobPositions();
 
+      // 检查widget是否仍然挂载，防止在销毁后调用setState
+      if (!mounted) return;
+
       setState(() {
         _allPositions = positions;
         _displayedPositions = List.from(_allPositions);
         _isLoading = false;
       });
     } catch (e) {
+      // 检查widget是否仍然挂载，防止在销毁后调用setState
+      if (!mounted) return;
+
       setState(() {
         _errorMessage = '加载职位列表失败: $e';
         _isLoading = false;
@@ -73,6 +82,9 @@ class _JobPositionsPageState extends State<JobPositionsPage> {
 
   /// 根据筛选条件过滤职位列表
   void _filterPositions() {
+    // 检查widget是否仍然挂载，防止在销毁后调用setState
+    if (!mounted) return;
+
     setState(() {
       _displayedPositions =
           _allPositions.where((position) {
@@ -235,7 +247,9 @@ class _JobPositionsPageState extends State<JobPositionsPage> {
                 ),
                 onChanged: (value) {
                   // 实时搜索
-                  setState(() {}); // 触发重建以显示/隐藏清除按钮
+                  if (mounted) {
+                    setState(() {}); // 触发重建以显示/隐藏清除按钮
+                  }
                   _filterPositions();
                 },
                 onSubmitted: (value) {
@@ -295,10 +309,12 @@ class _JobPositionsPageState extends State<JobPositionsPage> {
               _cityOptions,
               Icons.location_on_outlined,
               (value) {
-                setState(() {
-                  _selectedCity = value;
-                  _filterPositions();
-                });
+                if (mounted) {
+                  setState(() {
+                    _selectedCity = value;
+                    _filterPositions();
+                  });
+                }
               },
             ),
           ),
@@ -317,10 +333,12 @@ class _JobPositionsPageState extends State<JobPositionsPage> {
               _educationOptions,
               Icons.school_outlined,
               (value) {
-                setState(() {
-                  _selectedEducation = value;
-                  _filterPositions();
-                });
+                if (mounted) {
+                  setState(() {
+                    _selectedEducation = value;
+                    _filterPositions();
+                  });
+                }
               },
             ),
           ),
@@ -574,7 +592,7 @@ class _JobPositionsPageState extends State<JobPositionsPage> {
 
   @override
   void dispose() {
-    // 释放控制器资源
+    // 清理搜索控制器
     _searchController.dispose();
     super.dispose();
   }

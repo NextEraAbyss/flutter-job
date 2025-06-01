@@ -30,6 +30,9 @@ class _QAPageState extends State<QAPage> {
   /// 从API加载问答数据
   Future<void> _loadQAData() async {
     try {
+      // 检查widget是否仍然挂载，防止在销毁后调用setState
+      if (!mounted) return;
+
       setState(() {
         _isLoading = true;
         _errorMessage = null;
@@ -38,17 +41,30 @@ class _QAPageState extends State<QAPage> {
       // 调用API服务获取问答列表
       final qaList = await QAApi.getQAList();
 
+      // 检查widget是否仍然挂载，防止在销毁后调用setState
+      if (!mounted) return;
+
       setState(() {
         _qaItems = qaList;
         _isLoading = false;
       });
     } catch (e) {
+      // 检查widget是否仍然挂载，防止在销毁后调用setState
+      if (!mounted) return;
+
       setState(() {
         _errorMessage = '加载问答数据失败: $e';
         _isLoading = false;
       });
       print('加载问答数据错误: $e');
     }
+  }
+
+  @override
+  void dispose() {
+    // 清理资源，为未来可能的扩展做准备
+    // 如果后续添加Timer、StreamSubscription等需要手动清理的资源，在此处理
+    super.dispose();
   }
 
   @override
