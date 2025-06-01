@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bruno/bruno.dart';
 import 'dart:async';
-import '../../services/api/company_api.dart';
+import '../../constants/app_theme.dart';
 
 /// 公司介绍页面组件
 /// 展示公司轮播图和公司信息
@@ -52,7 +51,7 @@ class _CompanyIntroPageState extends State<CompanyIntroPage> {
       } else {
         _currentPage = 0;
       }
-      
+
       // 确保控制器已附加到视图
       if (_pageController.hasClients) {
         _pageController.animateToPage(
@@ -94,9 +93,7 @@ class _CompanyIntroPageState extends State<CompanyIntroPage> {
                           // 图片加载失败时显示提示信息
                           return Container(
                             color: Colors.grey[300],
-                            child: const Center(
-                              child: Text('图片加载失败'),
-                            ),
+                            child: const Center(child: Text('图片加载失败')),
                           );
                         },
                       );
@@ -109,20 +106,22 @@ class _CompanyIntroPageState extends State<CompanyIntroPage> {
                     right: 0,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: bannerImages.asMap().entries.map((entry) {
-                        return Container(
-                          width: 8,
-                          height: 8,
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            // 当前页面对应的指示器显示为白色，其他为半透明
-                            color: _currentPage == entry.key
-                                ? Colors.white
-                                : Colors.white.withOpacity(0.5),
-                          ),
-                        );
-                      }).toList(),
+                      children:
+                          bannerImages.asMap().entries.map((entry) {
+                            return Container(
+                              width: 8,
+                              height: 8,
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                // 当前页面对应的指示器显示为白色，其他为半透明
+                                color:
+                                    _currentPage == entry.key
+                                        ? Colors.white
+                                        : Colors.white.withValues(alpha: 0.5),
+                              ),
+                            );
+                          }).toList(),
                     ),
                   ),
                 ],
@@ -136,7 +135,8 @@ class _CompanyIntroPageState extends State<CompanyIntroPage> {
                   // 公司简介卡片
                   _buildInfoCard(
                     title: '公司简介',
-                    content: '''绿境中苏泽于2024年创立，致力于前沿研究技术开发和应用制造，实现全球化运营，是国务院120家试点企业集团，国家双创示范基地，国家产教融合试点企业，创中国世名品牌，获中国工业大奖等。
+                    content:
+                        '''绿境中苏泽于2024年创立，致力于前沿研究技术开发和应用制造，实现全球化运营，是国务院120家试点企业集团，国家双创示范基地，国家产教融合试点企业，创中国世名品牌，获中国工业大奖等。
 
 改革开放初期第一个产品出口，配套国际主流品牌，现已成为全球知名的高科技企业。''',
                   ),
@@ -166,7 +166,7 @@ class _CompanyIntroPageState extends State<CompanyIntroPage> {
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4.0,
             offset: const Offset(0, 2),
           ),

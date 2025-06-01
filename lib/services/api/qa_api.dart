@@ -8,14 +8,14 @@ class QAApi {
   static Future<List<QAItem>> getQAList() async {
     try {
       print('开始请求问答数据: /api/v1/qa');
-      
+
       // 使用Http工具类获取数据
       final response = await HttpClient.get('/api/v1/qa');
-      
+
       // 检查响应结构
       if (response.containsKey('data')) {
         final data = response['data'];
-        
+
         if (data is Map && data.containsKey('items') && data['items'] is List) {
           final List<dynamic> items = data['items'];
           print('解析到 ${items.length} 条问答');
@@ -26,7 +26,7 @@ class QAApi {
           return data.map((item) => QAItem.fromJson(item)).toList();
         }
       }
-      
+
       throw Exception('QA API响应结构异常: $response');
     } catch (e) {
       print('Error fetching QA: $e');

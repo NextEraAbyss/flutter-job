@@ -33,13 +33,14 @@ class JobPosition {
         requirementsList = List<String>.from(json['requirements']);
       } else if (json['requirements'] is String) {
         // 如果是字符串，尝试按行分割
-        requirementsList = (json['requirements'] as String)
-            .split('\n')
-            .where((s) => s.trim().isNotEmpty)
-            .toList();
+        requirementsList =
+            (json['requirements'] as String)
+                .split('\n')
+                .where((s) => s.trim().isNotEmpty)
+                .toList();
       }
     }
-    
+
     return JobPosition(
       id: json['id'] is String ? int.tryParse(json['id']) : json['id'],
       title: json['title'] ?? '',

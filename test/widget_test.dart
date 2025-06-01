@@ -1,9 +1,6 @@
-// This is a basic Flutter widget test.
+// Flutter Job应用基础组件测试
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// 测试应用的基本功能，包括底部导航、页面切换等
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,20 +8,67 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_job/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('Flutter Job App Tests', () {
+    testWidgets('应用启动测试', (WidgetTester tester) async {
+      // 构建应用并触发一帧渲染
+      await tester.pumpWidget(const JobApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      // 验证应用正常启动
+      expect(find.byType(MainTabPage), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      // 验证底部导航栏存在
+      expect(find.byType(BottomNavigationBar), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      // 验证默认显示企业介绍页面
+      expect(find.text('企业介绍'), findsWidgets);
+    });
+
+    testWidgets('底部导航栏切换测试', (WidgetTester tester) async {
+      // 构建应用
+      await tester.pumpWidget(const JobApp());
+
+      // 验证初始状态为企业介绍页面
+      expect(find.text('企业介绍'), findsWidgets);
+
+      // 点击招聘职位标签
+      await tester.tap(find.text('招聘职位'));
+      await tester.pumpAndSettle();
+
+      // 验证切换到招聘职位页面
+      expect(find.text('招聘职位'), findsWidgets);
+
+      // 点击Q&A标签
+      await tester.tap(find.text('Q&A'));
+      await tester.pumpAndSettle();
+
+      // 验证切换到Q&A页面
+      expect(find.text('Q&A'), findsWidgets);
+
+      // 点击最新资讯标签
+      await tester.tap(find.text('最新资讯'));
+      await tester.pumpAndSettle();
+
+      // 验证切换到资讯页面
+      expect(find.text('最新资讯'), findsWidgets);
+    });
+
+    testWidgets('应用栏标题更新测试', (WidgetTester tester) async {
+      // 构建应用
+      await tester.pumpWidget(const JobApp());
+
+      // 验证初始标题
+      expect(find.text('企业介绍'), findsWidgets);
+
+      // 切换到不同页面并验证标题更新
+      final tabLabels = ['招聘职位', 'Q&A', '最新资讯'];
+
+      for (String label in tabLabels) {
+        await tester.tap(find.text(label));
+        await tester.pumpAndSettle();
+
+        // 验证AppBar标题更新
+        expect(find.text(label), findsWidgets);
+      }
+    });
   });
 }

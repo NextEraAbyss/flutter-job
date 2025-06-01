@@ -8,14 +8,14 @@ class NewsApi {
   static Future<List<NewsItem>> getNewsList() async {
     try {
       print('开始请求新闻数据: /api/v1/news?page=1&page_size=10');
-      
+
       // 使用Http工具类获取数据
       final response = await HttpClient.get('/api/v1/news?page=1&page_size=10');
-      
+
       // 检查响应结构
       if (response.containsKey('data')) {
         final data = response['data'];
-        
+
         if (data is Map && data.containsKey('items') && data['items'] is List) {
           final List<dynamic> items = data['items'];
           print('解析到 ${items.length} 条新闻');
@@ -26,7 +26,7 @@ class NewsApi {
           return data.map((item) => NewsItem.fromJson(item)).toList();
         }
       }
-      
+
       throw Exception('新闻API响应结构异常: $response');
     } catch (e) {
       print('Error fetching news: $e');
@@ -38,16 +38,16 @@ class NewsApi {
   static Future<NewsItem> getNewsDetail(int id) async {
     try {
       print('开始请求新闻详情: /api/v1/news/$id');
-      
+
       // 使用Http工具类获取数据
       final response = await HttpClient.get('/api/v1/news/$id');
-      
+
       // 检查响应结构
       if (response.containsKey('data')) {
         final data = response['data'];
         return NewsItem.fromJson(data);
       }
-      
+
       throw Exception('新闻详情API响应结构异常: $response');
     } catch (e) {
       print('Error fetching news detail: $e');

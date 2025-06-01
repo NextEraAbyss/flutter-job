@@ -37,7 +37,7 @@ class _QAPageState extends State<QAPage> {
 
       // 调用API服务获取问答列表
       final qaList = await QAApi.getQAList();
-      
+
       setState(() {
         _qaItems = qaList;
         _isLoading = false;
@@ -56,51 +56,52 @@ class _QAPageState extends State<QAPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: SafeArea(
-        child: _isLoading
-            // 加载中显示加载指示器
-            ? const Center(child: CircularProgressIndicator())
-            // 有错误时显示错误信息
-            : _errorMessage != null
+        child:
+            _isLoading
+                // 加载中显示加载指示器
+                ? const Center(child: CircularProgressIndicator())
+                // 有错误时显示错误信息
+                : _errorMessage != null
                 ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '出错了',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red[700],
-                          ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '出错了',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red[700],
                         ),
-                        const SizedBox(height: 8.0),
-                        Text(_errorMessage!),
-                        const SizedBox(height: 16.0),
-                        ElevatedButton(
-                          onPressed: _loadQAData,
-                          child: const Text('重试'),
-                        ),
-                      ],
-                    ),
-                  )
+                      ),
+                      const SizedBox(height: 8.0),
+                      Text(_errorMessage!),
+                      const SizedBox(height: 16.0),
+                      ElevatedButton(
+                        onPressed: _loadQAData,
+                        child: const Text('重试'),
+                      ),
+                    ],
+                  ),
+                )
                 // 成功加载数据后显示问答列表，支持下拉刷新
                 : RefreshIndicator(
-                    onRefresh: _loadQAData,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(16.0),
-                      itemCount: _qaItems.length,
-                      itemBuilder: (context, index) {
-                        final qaItem = _qaItems[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: QAItemWidget(
-                            question: qaItem.question,
-                            answer: qaItem.answer,
-                          ),
-                        );
-                      },
-                    ),
+                  onRefresh: _loadQAData,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: _qaItems.length,
+                    itemBuilder: (context, index) {
+                      final qaItem = _qaItems[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: QAItemWidget(
+                          question: qaItem.question,
+                          answer: qaItem.answer,
+                        ),
+                      );
+                    },
                   ),
+                ),
       ),
     );
   }
@@ -114,11 +115,7 @@ class QAItemWidget extends StatelessWidget {
   // 答案文本
   final String answer;
 
-  const QAItemWidget({
-    super.key,
-    required this.question,
-    required this.answer,
-  });
+  const QAItemWidget({super.key, required this.question, required this.answer});
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +126,7 @@ class QAItemWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4.0,
             offset: const Offset(0, 2),
           ),
