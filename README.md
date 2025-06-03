@@ -801,30 +801,7 @@ git push origin feature/your-feature
 
 ---
 
-## 📈 开发计划 | Roadmap
 
-### 🎯 短期目标 (Q1 2024)
-- [x] ✅ 基础功能模块开发
-- [x] ✅ Material Design 3适配
-- [x] ✅ 多平台兼容性优化
-- [ ] 🚧 用户登录注册功能
-- [ ] 🚧 职位申请和简历管理
-
-### 🚀 中期目标 (Q2-Q3 2024)
-- [ ] 📋 实时聊天功能
-- [ ] 🔔 消息推送系统
-- [ ] 📊 数据统计和分析
-- [ ] 🌙 深色主题完善
-- [ ] 🌍 国际化多语言支持
-
-### 💫 长期目标 (Q4 2024+)
-- [ ] 🤖 AI职位推荐算法
-- [ ] 📱 桌面端应用开发
-- [ ] 🔌 第三方平台集成
-- [ ] 📈 大数据分析平台
-- [ ] 🎨 自定义主题系统
-
----
 
 ## 📄 许可证 | License
 
@@ -850,12 +827,12 @@ copies or substantial portions of the Software.
 
 ## 🔗 相关链接 | Links
 
-
-- 🌐 **在线演示**: [Flutter Job Demo](https://flutter-job-demo.web.app)
-- 📱 **Android下载**: [Google Play Store](#)
-- 🍎 **iOS下载**: [App Store](#)
-- 📖 **技术文档**: [开发文档](docs/README.md)
-
+- 🌐 **个人网站**: [cv.wat.ink](https://cv.wat.ink)
+- 📝 **技术博客**: [blog.wat.ink](https://blog.wat.ink)
+- 🛠️ **管理后台**: [admin.wat.ink](https://admin.wat.ink)
+- 🔌 **API文档**: [api.wat.ink](https://api.wat.ink)
+- 👨‍💻 **GitHub**: [@NextEraAbyss](https://github.com/NextEraAbyss)
+- 🦄 **Gitee**: [@NextEraAbyss](https://gitee.com/NextEraAbyss)
 
 
 ---
@@ -864,8 +841,8 @@ copies or substantial portions of the Software.
 **🌟 如果这个项目对您有帮助，请给个 Star 支持一下！**
 
 <p>
-  <img src="https://img.shields.io/github/stars/NextEraAbyss/cv?style=social" alt="GitHub stars">
-  <img src="https://img.shields.io/github/forks/NextEraAbyss/cv?style=social" alt="GitHub forks">
+  <img src="https://img.shields.io/github/stars/NextEraAbyss/flutter-job?style=social" alt="GitHub stars">
+  <img src="https://img.shields.io/github/forks/NextEraAbyss/flutter-job?style=social" alt="GitHub forks">
 </p>
 
 *Built with ❤️ by [秦若宸](https://cv.wat.ink)*
