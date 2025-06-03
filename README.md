@@ -793,35 +793,10 @@ git push origin feature/your-feature
 # 5. 创建Pull Request
 ```
 
-### 📝 代码规范
-- 遵循Dart官方代码规范
-- 添加必要的注释和文档
-- 确保所有测试通过
-- 遵循项目的架构设计
-
----
-
-
 
 ## 📄 许可证 | License
 
 本项目采用 [MIT License](LICENSE) 开源协议。
-
-```
-MIT License
-
-Copyright (c) 2024 Flutter Job Team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-```
 
 ---
 
